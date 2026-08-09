@@ -7,6 +7,11 @@ step. Lo que ves en la carpeta es exactamente lo que GitHub Pages sirve.
 **Idiomas:** español e inglés, con selector en el pie
 **Tipografía:** Junicode
 
+> **Nunca guardes tokens ni contraseñas en este repo.** Es público: cualquier
+> cosa que commitees queda visible, y sigue en el historial de git aunque
+> después la borres. Los tokens van en el llavero de macOS, que es donde git
+> los deja solo después del primer `push`.
+
 ---
 
 ## Ver los cambios mientras trabajás

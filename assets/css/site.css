@@ -673,6 +673,7 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   color: var(--ink-muted);
 }
 .site-footer p { margin: 0; }
+.credit { font-size: .78rem; opacity: .8; }
 .site-footer a { color: var(--ink-muted); text-decoration: underline; text-underline-offset: .15em; }
 .site-footer a:hover { color: var(--link); }
 
@@ -725,6 +726,199 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   color: var(--ink-muted);
   opacity: .85;
 }
+
+/* --------------------------------------------------------------------------
+   Página Personal: últimas películas y miniaturas de fotos
+   -------------------------------------------------------------------------- */
+
+.films,
+.photo-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  display: grid;
+}
+/* Cuatro destacadas en una sola fila; seis fotos en dos filas de tres. */
+.films      { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.1rem .7rem; }
+.photo-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
+
+/* En pantallas angostas cuatro pósters quedan del tamaño de una estampilla. */
+@media (max-width: 34rem) {
+  .films { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.film { margin: 0; }
+.film__link {
+  display: block;
+  text-decoration: none;
+  color: var(--ink);
+}
+.film__poster {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;      /* la proporción de un póster */
+  object-fit: cover;
+  border-radius: var(--radius);
+  display: block;
+  background: var(--bg-sunken);   /* placeholder mientras carga */
+  transition: opacity .18s ease;
+}
+.film__link:hover .film__poster { opacity: .78; }
+.film__link:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+.film__title {
+  display: block;
+  margin-top: .4rem;
+  font-size: var(--step--1);
+  line-height: 1.3;
+}
+.film__link:hover .film__title {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: .16em;
+}
+.film__meta {
+  display: block;
+  font-size: .78rem;
+  color: var(--ink-muted);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.photo-grid li { margin: 0; }
+.photo-grid img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--radius);
+  display: block;
+  transition: opacity .18s ease;
+}
+.photo-grid a:hover img { opacity: .78; }
+.photo-grid a:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+/* --------------------------------------------------------------------------
+   Cursor wug
+   El puntero del sistema se reemplaza por un pajarito que aletea al moverse.
+   La clase .has-wug la pone site.js y SOLO si el dispositivo tiene puntero
+   fino y no se pidió menos movimiento: si algo de eso falla, o si el
+   JavaScript no carga, queda el cursor normal del sistema y no se rompe nada.
+   -------------------------------------------------------------------------- */
+
+.has-wug,
+.has-wug * { cursor: none; }
+
+/* Excepción: donde se escribe o se selecciona texto conviene el cursor real,
+   que marca la posición exacta del punto de inserción. */
+.has-wug :is(input, textarea, [contenteditable]) { cursor: text; }
+
+/* Capas separadas, cada una con su propia animación, para que no se pisen:
+     .wug                  posición (la mueve el JS)
+     .wug__bird            picotazo al hacer clic
+     .wug__body y patas    negativo en el instante del golpe
+     .wug__leg-l / -r      apertura al desplazarse
+   Si dos animaciones vivieran en el mismo elemento, la última declarada
+   ganaría y anularía a la otra. */
+.wug {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 36px;
+  z-index: 9999;
+  pointer-events: none;   /* nunca intercepta un clic */
+  opacity: 0;
+  transition: opacity .18s ease;
+  will-change: transform;
+}
+.wug--ready { opacity: 1; }
+
+.wug__bird {
+  position: absolute;
+  inset: 0;
+  /* Pivote donde las patas tocan el suelo: al picotear, el cuerpo se tumba
+     hacia adelante desde ahí, como un pájaro de verdad. */
+  transform-origin: 46% 84%;
+}
+
+/* Picotea al hacer clic, una sola vez. Un picotazo es asimétrico: si la ida y
+   la vuelta duran lo mismo, el ojo lo lee como un mecerse. Cuatro fases:
+     retrae (lento) · estoca (rapidísimo) · golpea (sostiene) · vuelve (suave)
+   La retracción previa es lo que más hace: sin ese impulso hacia atrás no hay
+   golpe que valga. */
+/* 260 ms en total, y el golpe cae a los ~100 ms del mousedown.
+   Es una restricción dura, no una preferencia estética: al clickear un link
+   la navegación arranca en el mouseup (80-120 ms después), y ahí el navegador
+   descarta la página con su animación a medio correr. Todo lo que tenga que
+   verse tiene que haber pasado antes. */
+.wug--peck .wug__bird { animation: wug-peck .26s; }
+
+@keyframes wug-peck {
+  0%   { rotate: 0deg;   translate: 0 0;      animation-timing-function: ease-in-out; }
+  12%  { rotate: -8deg;  translate: -1px 0;   animation-timing-function: cubic-bezier(.85,0,.9,.6); }
+  38%  { rotate: 24deg;  translate: 2px 1px;  animation-timing-function: linear; }
+  55%  { rotate: 23deg;  translate: 2px 1px;  animation-timing-function: ease-out; }
+  100% { rotate: 0deg;   translate: 0 0; }
+}
+
+/* En el instante del golpe, el wug se vuelve su propio negativo: el trazo pasa
+   a blanco y le crece un contorno negro alrededor.
+   Los cuatro drop-shadow son ese contorno — se dibujan siguiendo la silueta
+   real (incluidas las patas giradas), así que no hace falta ninguna imagen
+   extra ni recalcular nada cuando el bicho se mueve.
+   Va sobre .wug__bird y no sobre .wug: en tema oscuro el padre ya lleva su
+   propio invert, y al componerse uno con otro el negativo sale bien en los
+   dos temas. */
+.wug--peck .wug__body,
+.wug--peck .wug__leg-l,
+.wug--peck .wug__leg-r { animation: wug-negativo .26s steps(1, end); }
+
+/* El negativo entra junto con el golpe y se queda casi hasta el final: son
+   ~140 ms, que es poco, pero un cambio de color se percibe mucho más rápido
+   que un movimiento. */
+@keyframes wug-negativo {
+  0%, 37%   { filter: none; }
+  38%, 92%  { filter: invert(1)
+                      drop-shadow( 1px 0 0 #000) drop-shadow(-1px 0 0 #000)
+                      drop-shadow( 0 1px 0 #000) drop-shadow( 0 -1px 0 #000); }
+  93%, 100% { filter: none; }
+}
+
+/* El trazo del original es negro: sobre el tema oscuro desaparecería, así que
+   ahí lo invertimos a blanco. */
+:root[data-theme="dark"] .wug { filter: invert(1); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .wug { filter: invert(1); }
+}
+
+/* El dibujo viene partido en tres capas que comparten el mismo lienzo, así
+   que apiladas reconstruyen el original exacto y alinean solas: cuerpo, pata
+   izquierda y pata derecha. Separar las patas una de otra es lo que permite
+   abrirlas hacia los costados sin deformar el trazo. */
+.wug__body,
+.wug__leg-l,
+.wug__leg-r {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Cada pata gira desde su propio nacimiento (medido sobre el original:
+   x=56 y x=88 de 141, y=106 de 128). Si giraran desde el centro del dibujo,
+   se despegarían del cuerpo. */
+.wug__leg-l { transform-origin: 40.1% 82.8%; }
+.wug__leg-r { transform-origin: 62.1% 82.8%; }
+
+/* Abren de golpe y se quedan abiertas: es un despegue, no una caminata.
+   El rebote del final de la curva es lo que le da el aire de dibujo animado;
+   un vaivén constante se leería como pasos. */
+.wug__leg-l,
+.wug__leg-r { transition: rotate .2s cubic-bezier(.2, 1.8, .4, 1); }
+
+.wug--flying .wug__leg-l { rotate:  36deg; }
+.wug--flying .wug__leg-r { rotate: -36deg; }
+
 
 /* --------------------------------------------------------------------------
    404

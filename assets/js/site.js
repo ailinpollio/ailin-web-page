@@ -119,6 +119,177 @@
   })();
 
   /* ---------------------------------------------------------------------
+     Cursor wug
+     Un pajarito celeste reemplaza al puntero y aletea mientras se mueve.
+     Se activa sólo con puntero fino (mouse o trackpad) y si nadie pidió
+     menos movimiento. En celulares y tablets no se activa: no hay puntero
+     que seguir y ocultar el cursor no tendría sentido.
+     --------------------------------------------------------------------- */
+
+  (function wugCursor() {
+    var finePointer = window.matchMedia("(pointer: fine)").matches;
+    var quietMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!finePointer || quietMotion) return;
+
+    /* El wug de la tarjeta de 1958 (copia de dominio público de Wikimedia
+       Commons), partido en cuerpo y patas para poder animarlos por separado.
+       Ningún trazo es agregado: las dos capas son recortes del original. */
+    var wug = document.createElement("div");
+    wug.className = "wug";
+    wug.setAttribute("aria-hidden", "true");
+
+    var bird = document.createElement("div");
+    bird.className = "wug__bird";
+    [["wug__body",  "assets/img/wug-body.png"],
+     ["wug__leg-l", "assets/img/wug-leg-l.png"],
+     ["wug__leg-r", "assets/img/wug-leg-r.png"]].forEach(function (capa) {
+      var img = document.createElement("img");
+      img.className = capa[0];
+      img.src = capa[1];
+      img.alt = "";
+      img.decoding = "async";
+      bird.appendChild(img);
+    });
+    wug.appendChild(bird);
+    document.body.appendChild(wug);
+    /* Ojo: el cursor del sistema NO se oculta acá. Se oculta recién cuando el
+       wug se dibujó por primera vez (más abajo). Si algo fallara en el medio,
+       quedarse sin wug Y sin flecha dejaría la página inusable. */
+
+    /* El puntero cae cerca de la cabeza del wug, arriba a la izquierda, que es
+       donde el sistema pone la punta de la flecha. Si lo centráramos, el clic
+       aterrizaría más abajo de donde uno cree estar apuntando. */
+    var HOTSPOT_X = -14;
+    var HOTSPOT_Y = -10;
+
+    var px = 0, py = 0, pending = false, quieto;
+
+    /* Sólo posición. El cuerpo no se inclina ni se deforma al desplazarse:
+       lo único que se mueve son las patas, y de eso se encarga el CSS. */
+    function draw() {
+      pending = false;
+      wug.style.transform =
+        "translate3d(" + px + "px," + py + "px,0)" +
+        "translate(" + HOTSPOT_X + "%," + HOTSPOT_Y + "%)";
+    }
+
+    function mover(event) {
+      /* Sólo descartamos el dedo. Safari a veces deja pointerType vacío para
+         el mouse y el trackpad, así que exigir === "mouse" dejaba la página
+         sin wug y sin cursor. El filtro real ya lo hizo (pointer: fine). */
+      if (event.pointerType === "touch") return;
+
+      // Recién ahora escondemos la flecha: ya sabemos que vamos a dibujar.
+      root.classList.add("has-wug");
+
+      px = event.clientX;
+      py = event.clientY;
+
+      wug.classList.add("wug--ready", "wug--flying");
+      clearTimeout(quieto);
+      quieto = setTimeout(function () {
+        wug.classList.remove("wug--flying");   // quieto, las patas descansan
+      }, 140);
+
+      /* Una sola actualización por cuadro: mover el puntero dispara muchos
+         más eventos que refrescos de pantalla. */
+      if (!pending) {
+        pending = true;
+        requestAnimationFrame(draw);
+      }
+    }
+
+    /* Escuchamos los dos: pointermove donde exista, y mousemove como red de
+       seguridad. Un mismo movimiento puede disparar ambos, pero draw() se
+       limita a un dibujo por cuadro, así que no cuesta nada. */
+    document.addEventListener("pointermove", mover, { passive: true });
+    document.addEventListener("mousemove", mover, { passive: true });
+
+    /* Al hacer clic: picotea una vez y, en el instante del golpe, invierte
+       sus colores. Antes el picoteo vivía en el hover y no paraba nunca;
+       como respuesta a una acción concreta se lee mucho mejor. */
+    var flash;
+    document.addEventListener("pointerdown", function () {
+      wug.classList.remove("wug--peck");
+      void wug.offsetWidth;          // reinicia la animación desde cero
+      wug.classList.add("wug--peck");
+
+      clearTimeout(flash);
+      flash = setTimeout(function () {
+        wug.classList.remove("wug--peck");
+      }, 260);                       // igual a la duración del picotazo
+    }, { passive: true });
+
+    /* Si el mouse se va de la ventana, el wug se va con él. */
+    document.addEventListener("pointerleave", function () {
+      wug.classList.remove("wug--ready");
+    });
+    window.addEventListener("blur", function () {
+      wug.classList.remove("wug--ready");
+    });
+  })();
+
+  /* ---------------------------------------------------------------------
+     Últimas películas vistas (página Personal)
+     Los datos salen de assets/js/films.js, que reescribe cada día un workflow
+     de GitHub Actions leyendo el RSS de Letterboxd. Acá sólo se dibujan.
+     --------------------------------------------------------------------- */
+
+  (function films() {
+    var mount = document.getElementById("film-list");
+    if (!mount || !window.FILMS || !window.FILMS.length) return;
+
+    /* Los pósters se cargan desde el servidor de Letterboxd, no se copian al
+       repositorio. Son imágenes con derechos de los estudios: enlazarlas
+       apunta a la fuente en vez de redistribuirlas. Si algún día dejan de
+       verse, es que cambiaron sus direcciones — regenerá films.js con
+       tools/fetch_favourites.py */
+    var lista = document.createElement("ul");
+    lista.className = "films";
+
+    window.FILMS.forEach(function (peli) {
+      var li = document.createElement("li");
+      li.className = "film";
+
+      var a = document.createElement("a");
+      a.className = "film__link";
+      a.href = peli.link;
+      a.rel = "noopener";
+
+      if (peli.poster) {
+        var img = document.createElement("img");
+        img.className = "film__poster";
+        img.src = peli.poster;
+        /* alt vacío a propósito: el título va escrito justo debajo, y
+           repetirlo haría que un lector de pantalla lo diga dos veces. */
+        img.alt = "";
+        img.loading = "lazy";
+        img.width = 600;
+        img.height = 900;
+        a.appendChild(img);
+      }
+
+      var titulo = document.createElement("span");
+      titulo.className = "film__title";
+      titulo.textContent = peli.title;
+      a.appendChild(titulo);
+      li.appendChild(a);
+
+      var meta = document.createElement("span");
+      meta.className = "film__meta";
+      var partes = [];
+      if (peli.director) partes.push(peli.director);
+      if (peli.year) partes.push(String(peli.year));
+      meta.textContent = partes.join(" · ");
+      li.appendChild(meta);
+
+      lista.appendChild(li);
+    });
+
+    mount.appendChild(lista);
+  })();
+
+  /* ---------------------------------------------------------------------
      Marca el enlace de navegación de la página actual
      --------------------------------------------------------------------- */
 

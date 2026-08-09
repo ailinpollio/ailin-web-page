@@ -97,10 +97,12 @@
     <h2 class="section-label section-label--soft" lang="es">Ver pelis…</h2>
     <h2 class="section-label section-label--soft" lang="en">Watch some films…</h2>
 
+    <!-- La lista la dibuja site.js a partir de assets/js/films.js, que se
+         regenera solo cada día desde el RSS de Letterboxd. -->
+    <div id="film-list"></div>
+
     <p>
-      <!-- TODO: pegá acá la dirección de tu perfil de Letterboxd,
-           del tipo https://letterboxd.com/tu-usuario/ -->
-      <a class="btn btn--ghost" href="#" rel="me noopener">
+      <a class="btn btn--ghost" href="https://boxd.it/2qPWL" rel="me noopener">
         <svg aria-hidden="true"><use href="#i-letterboxd"></use></svg>
         <span lang="es">Ver mi Letterboxd</span>
         <span lang="en">See my Letterboxd</span>
@@ -110,9 +112,31 @@
     <h2 class="section-label section-label--soft" lang="es">O sacar fotos</h2>
     <h2 class="section-label section-label--soft" lang="en">Or take some pictures</h2>
 
+    <!-- Miniaturas locales, no enlazadas al CDN de Adobe: así cargan rápido y
+         siguen funcionando aunque el portfolio cambie o se caiga.
+         Para renovarlas: python3 tools/fetch_photos.py -->
+    <ul class="photo-grid">
+      <li><a href="https://ailinpollio.myportfolio.com/landscapes" rel="noopener">
+        <img src="assets/img/photos/foto-1.jpg" width="420" height="420" loading="lazy"
+             alt="Ladera de alerces dorados en otoño, con montañas nevadas al fondo."></a></li>
+      <li><a href="https://ailinpollio.myportfolio.com/landscapes" rel="noopener">
+        <img src="assets/img/photos/foto-2.jpg" width="420" height="420" loading="lazy"
+             alt="Lago de montaña con juncos secos en primer plano y cumbres entre la niebla."></a></li>
+      <li><a href="https://ailinpollio.myportfolio.com/people" rel="noopener">
+        <img src="assets/img/photos/foto-3.jpg" width="420" height="420" loading="lazy"
+             alt="Persona sonriendo, con anteojos y campera de abrigo, en un pinar."></a></li>
+      <li><a href="https://ailinpollio.myportfolio.com/people" rel="noopener">
+        <img src="assets/img/photos/foto-4.jpg" width="420" height="420" loading="lazy"
+             alt="Persona muy abrigada, con gorro y cuello alto, entre pinos altos."></a></li>
+      <li><a href="https://ailinpollio.myportfolio.com/urban" rel="noopener">
+        <img src="assets/img/photos/foto-5.jpg" width="420" height="420" loading="lazy"
+             alt="Reja romboidal de una ventana, con palmeras y una casa blanca detrás."></a></li>
+      <li><a href="https://ailinpollio.myportfolio.com/urban" rel="noopener">
+        <img src="assets/img/photos/foto-6.jpg" width="420" height="420" loading="lazy"
+             alt="Escalera de piedra que sube entre muros con plantas."></a></li>
+    </ul>
+
     <p>
-      <!-- TODO: pegá acá la dirección de tu portfolio de Adobe,
-           del tipo https://tu-nombre.myportfolio.com -->
       <a class="btn btn--ghost" href="https://ailinpollio.myportfolio.com" rel="me noopener">
         <svg aria-hidden="true"><use href="#i-camera"></use></svg>
         <span lang="es">Ver mis fotos</span>
@@ -134,7 +158,13 @@
   </main>
 
   <footer class="site-footer">
-    <p>© <span id="year">2026</span> Ailín Pollio San Pedro</p>
+    <p>
+      © <span id="year">2026</span> Ailín Pollio San Pedro<br>
+      <span class="credit">
+        <a href="https://commons.wikimedia.org/wiki/File:WugTest.png" rel="noopener">Wug</a>:
+        Jean Berko Gleason (1958)<span lang="es">, dominio público</span><span lang="en">, public domain</span>
+      </span>
+    </p>
 
     <div class="controls">
       <div class="control">
@@ -168,6 +198,7 @@
 
 </div>
 
+<script src="assets/js/films.js"></script>
 <script src="assets/js/site.js" defer></script>
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 </body>

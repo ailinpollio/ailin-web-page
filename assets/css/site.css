@@ -738,13 +738,20 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   margin: 0 0 1.5rem;
   display: grid;
 }
-/* Cuatro destacadas en una sola fila; seis fotos en dos filas de tres. */
-.films      { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.1rem .7rem; }
-.photo-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
+/* Cuatro destacadas en una sola fila; seis fotos en dos filas de tres.
+   Los anchos máximos están calculados para que la celda mida ~8.5rem en las
+   dos grillas: así las miniaturas quedan del mismo tamaño aunque una tenga
+   cuatro columnas y la otra tres, y ninguna se come el ancho del texto.
+   Si querés cambiar el tamaño, movés estos dos números juntos:
+     .films      = 4 × celda + 3 × 0.7rem
+     .photo-grid = 3 × celda + 2 × 0.5rem */
+.films      { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem .7rem; max-width: 36.1rem; }
+.photo-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem;      max-width: 26.5rem; }
 
 /* En pantallas angostas cuatro pósters quedan del tamaño de una estampilla. */
 @media (max-width: 34rem) {
-  .films { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .films { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: none; }
+  .photo-grid { max-width: none; }
 }
 
 .film { margin: 0; }
@@ -761,9 +768,7 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   border-radius: var(--radius);
   display: block;
   background: var(--bg-sunken);   /* placeholder mientras carga */
-  transition: opacity .18s ease;
 }
-.film__link:hover .film__poster { opacity: .78; }
 .film__link:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 
 .film__title {
@@ -791,10 +796,43 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   object-fit: cover;
   border-radius: var(--radius);
   display: block;
-  transition: opacity .18s ease;
+  background: var(--bg-sunken);
 }
-.photo-grid a:hover img { opacity: .78; }
 .photo-grid a:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+/* --- Miniaturas apagadas hasta que las tocás ----------------------------
+   En reposo pierden intensidad de color pero no lo pierden del todo, y bajan
+   apenas de opacidad. Recuperan todo al pasar el mouse por encima.
+
+   Por qué así y no en blanco y negro: hay pósters cuyo color ES la imagen
+   —Perfect Blue, sin ir más lejos— y en gris dejan de reconocerse.
+   Y por qué no sólo transparencia: bajar mucho la opacidad vuelve todo
+   lechoso, con menos contraste, y se ve desteñido en vez de atenuado. Sacarle
+   saturación apaga sin robarle contraste a la imagen.
+
+   El :focus-visible va junto al :hover a propósito: quien navega con el
+   teclado tiene que poder ver el color también, si no la página funciona
+   distinto según con qué la recorras. */
+.film__poster,
+.photo-grid img {
+  filter: saturate(.45);
+  opacity: .72;
+  transition: filter .28s ease, opacity .28s ease;
+}
+.film__link:hover .film__poster,
+.film__link:focus-visible .film__poster,
+.photo-grid a:hover img,
+.photo-grid a:focus-visible img {
+  filter: saturate(1);
+  opacity: 1;
+}
+
+/* En pantallas táctiles no existe "pasar el mouse por encima": ahí quedarían
+   grises para siempre, así que van a color de entrada. */
+@media (hover: none) {
+  .film__poster,
+  .photo-grid img { filter: none; opacity: 1; }
+}
 
 /* --------------------------------------------------------------------------
    Cursor wug

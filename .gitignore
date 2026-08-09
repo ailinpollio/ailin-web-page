@@ -1,0 +1,9 @@
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+venv/
+fontenv/
+
+# Los .woff2 de assets/fonts/ SÍ van al repo: son el sitio.
+# Lo que no va son los originales TTF/OTF, que viven fuera de esta carpeta.

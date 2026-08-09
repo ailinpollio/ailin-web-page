@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es" data-lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Página no encontrada · Page not found</title>
+<meta name="robots" content="noindex">
+
+<!-- Esta página se sirve desde CUALQUIER ruta rota (/algo/muy/hondo/x), así
+     que las rutas relativas a assets/ no funcionarían. Por eso va con todo
+     el estilo embebido y sin dependencias: se ve igual esté donde esté. -->
+<style>
+  :root {
+    --bg: #FBF8FA; --ink: #53424C; --ink-strong: #382B33;
+    --muted: #7A6773; --link: #914779; --jade: #17A68F;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #221B20; --ink: #EFE6EB; --ink-strong: #FFFFFF;
+      --muted: #BAA6B2; --link: #D890BE; --jade: #17A68F;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh;
+    display: grid; place-content: center; justify-items: start;
+    gap: .35rem; padding: 2rem clamp(1.25rem, 6vw, 4rem);
+    background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-size: 1.05rem; line-height: 1.65;
+  }
+  .code {
+    font-family: "Iowan Old Style", Georgia, serif;
+    font-size: clamp(3.5rem, 14vw, 7rem);
+    line-height: 1; margin: 0; color: var(--jade);
+  }
+  h1 {
+    font-family: "Iowan Old Style", Georgia, serif;
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
+    margin: .4rem 0 .2rem; color: var(--ink-strong);
+  }
+  p { margin: 0 0 1.25rem; max-width: 46ch; color: var(--muted); }
+  nav { display: flex; flex-wrap: wrap; gap: 1.25rem; }
+  a {
+    color: var(--link); text-decoration: underline;
+    text-underline-offset: .18em; font-weight: 600;
+  }
+  a:focus-visible { outline: 2px solid var(--jade); outline-offset: 3px; }
+  :root[data-lang="en"] [lang="es"] { display: none; }
+  :root[data-lang="es"] [lang="en"] { display: none; }
+</style>
+<script>
+(function(){try{
+  var l=localStorage.getItem("ailin:lang");
+  if(l!=="es"&&l!=="en"){
+    l=(navigator.language||"es").toLowerCase().indexOf("en")===0?"en":"es";
+  }
+  document.documentElement.setAttribute("data-lang",l);
+  document.documentElement.setAttribute("lang",l);
+}catch(e){}})();
+</script>
+</head>
+<body>
+  <p class="code">404</p>
+  <h1 lang="es">Esta página no existe</h1>
+  <h1 lang="en">This page doesn’t exist</h1>
+  <p lang="es">El link puede estar viejo, o la escribí mal yo. Probá por acá:</p>
+  <p lang="en">The link may be outdated, or I may have typed it wrong. Try here:</p>
+  <nav>
+    <!-- Rutas absolutas con el nombre del repo, porque GitHub Pages sirve
+         este sitio en /ailin-web-page/. Si algún día usás dominio propio o
+         el repo ailinpollio.github.io, borrá el prefijo. -->
+    <a href="/ailin-web-page/">About</a>
+    <a href="/ailin-web-page/publications.html">Publications</a>
+    <a href="/ailin-web-page/cv.html">CV</a>
+    <a href="/ailin-web-page/personal.html">Personal</a>
+  </nav>
+</body>
+</html>

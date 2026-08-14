@@ -1,15 +1,3 @@
-#!/usr/bin/env python3
-"""Copia el riel y el pie de index.html a las demás páginas.
-
-El sitio no tiene build step, así que el riel (nombre, navegación, redes) y el
-pie están repetidos en cada .html. Editá SIEMPRE index.html y después corré:
-
-    python3 tools/sync_shell.py
-
-Compara antes de escribir: si no hay cambios, no toca nada.
-Pasá --check para que sólo avise (útil si algún día agregás CI).
-"""
-
 from pathlib import Path
 import argparse
 import re
@@ -19,12 +7,10 @@ ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / "index.html"
 TARGETS = ["publications.html", "cv.html", "personal.html"]
 
-# (nombre para los mensajes, regex que captura el bloque entero)
 BLOCKS = [
     ("riel", re.compile(r'<aside class="rail">.*?</aside>', re.S)),
     ("pie", re.compile(r'<footer class="site-footer">.*?</footer>', re.S)),
 ]
-
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -78,10 +64,7 @@ def main() -> int:
         print("\nCorré  python3 tools/sync_shell.py  para sincronizar.")
         return 1
 
-    # Recordatorio: el <title> y el <a aria-current> de cada página son propios
-    # y NO se sincronizan a propósito.
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())

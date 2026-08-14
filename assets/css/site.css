@@ -1,7 +1,3 @@
-/* ==========================================================================
-   site.css — layout y componentes. Sólo consume tokens de tokens.css.
-   ========================================================================== */
-
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
@@ -59,10 +55,6 @@ img { max-width: 100%; height: auto; display: block; }
   clip-path: inset(50%); white-space: nowrap;
 }
 
-/* --------------------------------------------------------------------------
-   Estructura: riel izquierdo fijo + columna de contenido
-   -------------------------------------------------------------------------- */
-
 .shell {
   max-width: var(--shell);
   margin-inline: auto;
@@ -100,10 +92,6 @@ img { max-width: 100%; height: auto; display: block; }
   .content { padding-block: 2rem 3.5rem; max-width: none; }
 }
 
-/* --------------------------------------------------------------------------
-   Riel: identidad + navegación
-   -------------------------------------------------------------------------- */
-
 .rail__mark {
   display: inline-flex;
   align-items: baseline;
@@ -132,7 +120,6 @@ img { max-width: 100%; height: auto; display: block; }
   max-width: 22ch;
 }
 
-/* pequeño trazo de color que ancla la identidad */
 .rail__rule {
   width: 3.25rem;
   height: 3px;
@@ -188,10 +175,6 @@ img { max-width: 100%; height: auto; display: block; }
   .rail__role { max-width: 46ch; }
 }
 
-/* --------------------------------------------------------------------------
-   Enlaces sociales
-   -------------------------------------------------------------------------- */
-
 .social {
   display: flex;
   flex-wrap: wrap;
@@ -217,15 +200,6 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .social svg { width: 1.05rem; height: 1.05rem; fill: currentColor; }
 
-/* --------------------------------------------------------------------------
-   Tipografía de contenido
-   -------------------------------------------------------------------------- */
-
-/* Aspecto por defecto de los encabezados del contenido.
-   Va en :where() (especificidad 0) a propósito: así una clase como
-   .section-label puede redefinir color o tamaño sin pelear, aunque esté
-   puesta sobre un h2. Con :is() ganaba esta regla y el rótulo perdía su
-   color de acento. */
 .content :where(h1, h2, h3, h4) {
   font-family: var(--font-display);
   color: var(--ink-strong);
@@ -262,12 +236,7 @@ h1.page-title {
   margin: 2rem 0 .5rem;
 }
 .content p { margin: 0 0 1.15em; text-wrap: pretty; }
-/* Estilo de link para el texto corrido.
-   Va envuelto en :where() a propósito: eso lo deja con especificidad 0, así
-   que es un valor por defecto que cualquier componente (.btn, .chip) puede
-   pisar sin pelear. Sin el :where(), ".content a" (0,1,1) le ganaba a ".btn"
-   (0,1,0) y el botón quedaba con texto ciruela sobre fondo ciruela: 1:1 de
-   contraste, invisible. */
+
 .content :where(a) {
   color: var(--link);
   text-decoration: underline;
@@ -299,52 +268,35 @@ hr.section-rule {
   margin: 3rem 0;
 }
 
-/* Rótulo de sección. Un escalón por debajo del h2: se lee como título, pero
-   no compite con él. Para agrandarlo o achicarlo, mové sólo esta línea entre
-   --step-0 (cuerpo de texto) y --step-2 (igual que un h2). */
 .section-label {
   font-family: var(--font-display);
   font-size: var(--step-1);
   font-weight: 700;
-  /* El tracking baja a medida que sube el cuerpo: .09em servía al tamaño
-     chico original, pero acá dejaría las versalitas desarmadas. */
+
   letter-spacing: .05em;
   line-height: 1.2;
   text-transform: uppercase;
   color: var(--accent);
-  /* Más aire arriba que abajo: el rótulo se despega de la sección anterior y
-     se agrupa con lo que titula. Este es el único número que controla ese
-     salto — subilo o bajalo de a .25rem hasta que te cierre. */
+
   margin: 2.6rem 0 .7rem;
   text-wrap: balance;
 }
-/* Primer rótulo de la página: no necesita separarse de nada. */
+
 .content > div > .section-label:first-child { margin-top: 2.5rem; }
 
-/* La línea divisoria de .cv-block separa una entrada de la siguiente. Al
-   final de una sección no separa nada: queda flotando encima del título que
-   viene. La sacamos, y así el salto se ve limpio sin necesidad de agrandarlo. */
 .cv-block:has(+ .section-label),
 .facts li:last-child { border-bottom: 0; }
-/* Cuando hay rótulo y título juntos, el título se pega al rótulo. */
+
 .section-label + h2 { margin-top: 0; }
 
-/* Variante suave, para secciones donde las versalitas suenan demasiado
-   formales (la página Personal). Sin caja alta, sin tracking y en itálica:
-   la itálica de Junicode es cursiva de verdad, así que baja bastante el tono.
-   Para que queden en minúscula total, agregá text-transform: lowercase. */
 .section-label--soft {
   text-transform: none;
   letter-spacing: 0;
   font-style: italic;
   font-weight: 400;
-  /* En caja baja el ojo se lee más chico que en versalitas: compensamos. */
+
   font-size: calc(var(--step-1) * 1.12);
 }
-
-/* --------------------------------------------------------------------------
-   Botones y chips
-   -------------------------------------------------------------------------- */
 
 .btn {
   display: inline-flex;
@@ -362,8 +314,7 @@ hr.section-rule {
   cursor: pointer;
   transition: filter .16s ease, transform .16s ease;
 }
-/* El color se repite en :hover a propósito: si sólo estuviera en .btn, un
-   :hover heredado del texto corrido podría volver a pisarlo. */
+
 .btn:hover {
   filter: brightness(1.08);
   transform: translateY(-1px);
@@ -398,15 +349,6 @@ hr.section-rule {
 }
 a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
 
-/* --------------------------------------------------------------------------
-   About — retrato y destacados
-   -------------------------------------------------------------------------- */
-
-/* La foto va primera en el HTML, antes del párrafo de entrada, para que el
-   texto la envuelva desde arriba en lugar de arrancar debajo.
-   Para subirla o bajarla, mové el primer valor del margen: en negativo trepa
-   hacia el título de la página (con -3rem queda a su misma altura), en
-   positivo se despega hacia abajo. */
 .portrait {
   float: right;
   width: min(38%, 13rem);
@@ -421,10 +363,6 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   .portrait { float: none; width: 11rem; margin: 0 0 1.5rem; }
 }
 
-/* Novedades: el emoji hace de viñeta, con el texto alineado en su propia
-   columna para que las líneas siguientes no queden debajo del emoji.
-   El emoji va con aria-hidden en el HTML: un lector de pantalla que anuncie
-   "birrete" antes de cada ítem no aporta nada. */
 .news {
   list-style: none;
   padding: 0;
@@ -441,7 +379,7 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
 .news__mark {
   font-size: 1.1em;
   line-height: 1.5;
-  /* Los emoji se dibujan con la fuente del sistema, no con Junicode. */
+
   font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
 }
 
@@ -470,10 +408,6 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
 @media (max-width: 34rem) {
   .facts li { grid-template-columns: 1fr; gap: .1rem; }
 }
-
-/* --------------------------------------------------------------------------
-   Publicaciones
-   -------------------------------------------------------------------------- */
 
 .filters {
   display: flex;
@@ -581,13 +515,6 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   font-style: italic;
 }
 
-/* --------------------------------------------------------------------------
-   CV — línea de tiempo de dos columnas
-   -------------------------------------------------------------------------- */
-
-/* Un CV se hojea, no se lee de corrido: va más compacto que el texto normal.
-   El interlineado propio (1.45 contra el 1.62 del cuerpo) es lo que más
-   acorta la página, porque multiplica por cada renglón de cada viñeta. */
 .cv-block {
   display: grid;
   grid-template-columns: 8.5rem minmax(0, 1fr);
@@ -624,10 +551,6 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   .cv-block { grid-template-columns: 1fr; gap: .3rem; }
 }
 
-/* Herramientas: cada categoría es un bloquecito propio, en dos columnas.
-   El mínimo de 16rem es lo que fuerza dos columnas dentro de los 46rem de la
-   columna de lectura; con menos entrarían tres y los renglones quedarían
-   picados en pedacitos de cuatro palabras. */
 .skill-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
@@ -637,8 +560,7 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   list-style: none;
 }
 .skill-grid > li { margin: 0; }
-/* Versalitas chicas: es un rótulo, no un título. El tamaño lo separa de los
-   encabezados de sección, que son versalitas pero mucho más grandes. */
+
 .skill-grid h3 {
   margin: 0 0 .1rem;
   font-size: var(--step--1);
@@ -654,10 +576,6 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   line-height: 1.45;
   color: var(--ink);
 }
-
-/* --------------------------------------------------------------------------
-   Pie + controles (tema / fuente)
-   -------------------------------------------------------------------------- */
 
 .site-footer {
   grid-column: 1 / -1;
@@ -719,17 +637,12 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
 }
 .switch button + button { border-left: 1px solid var(--rule); }
 
-/* la nota del selector de fuente desaparece cuando ya elegiste */
 .dev-note {
   font-size: .74rem;
   font-style: italic;
   color: var(--ink-muted);
   opacity: .85;
 }
-
-/* --------------------------------------------------------------------------
-   Página Personal: últimas películas y miniaturas de fotos
-   -------------------------------------------------------------------------- */
 
 .films,
 .photo-grid {
@@ -738,17 +651,10 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   margin: 0 0 1.5rem;
   display: grid;
 }
-/* Cuatro destacadas en una sola fila; seis fotos en dos filas de tres.
-   Los anchos máximos están calculados para que la celda mida ~8.5rem en las
-   dos grillas: así las miniaturas quedan del mismo tamaño aunque una tenga
-   cuatro columnas y la otra tres, y ninguna se come el ancho del texto.
-   Si querés cambiar el tamaño, movés estos dos números juntos:
-     .films      = 4 × celda + 3 × 0.7rem
-     .photo-grid = 3 × celda + 2 × 0.5rem */
+
 .films      { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem .7rem; max-width: 36.1rem; }
 .photo-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem;      max-width: 26.5rem; }
 
-/* En pantallas angostas cuatro pósters quedan del tamaño de una estampilla. */
 @media (max-width: 34rem) {
   .films { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: none; }
   .photo-grid { max-width: none; }
@@ -763,11 +669,11 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
 .film__poster {
   width: 100%;
   height: auto;
-  aspect-ratio: 2 / 3;      /* la proporción de un póster */
+  aspect-ratio: 2 / 3;
   object-fit: cover;
   border-radius: var(--radius);
   display: block;
-  background: var(--bg-sunken);   /* placeholder mientras carga */
+  background: var(--bg-sunken);
 }
 .film__link:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 
@@ -800,19 +706,6 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
 }
 .photo-grid a:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 
-/* --- Miniaturas apagadas hasta que las tocás ----------------------------
-   En reposo pierden intensidad de color pero no lo pierden del todo, y bajan
-   apenas de opacidad. Recuperan todo al pasar el mouse por encima.
-
-   Por qué así y no en blanco y negro: hay pósters cuyo color ES la imagen
-   —Perfect Blue, sin ir más lejos— y en gris dejan de reconocerse.
-   Y por qué no sólo transparencia: bajar mucho la opacidad vuelve todo
-   lechoso, con menos contraste, y se ve desteñido en vez de atenuado. Sacarle
-   saturación apaga sin robarle contraste a la imagen.
-
-   El :focus-visible va junto al :hover a propósito: quien navega con el
-   teclado tiene que poder ver el color también, si no la página funciona
-   distinto según con qué la recorras. */
 .film__poster,
 .photo-grid img {
   filter: saturate(.45);
@@ -827,35 +720,16 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   opacity: 1;
 }
 
-/* En pantallas táctiles no existe "pasar el mouse por encima": ahí quedarían
-   grises para siempre, así que van a color de entrada. */
 @media (hover: none) {
   .film__poster,
   .photo-grid img { filter: none; opacity: 1; }
 }
 
-/* --------------------------------------------------------------------------
-   Cursor wug
-   El puntero del sistema se reemplaza por un pajarito que aletea al moverse.
-   La clase .has-wug la pone site.js y SOLO si el dispositivo tiene puntero
-   fino y no se pidió menos movimiento: si algo de eso falla, o si el
-   JavaScript no carga, queda el cursor normal del sistema y no se rompe nada.
-   -------------------------------------------------------------------------- */
-
 .has-wug,
 .has-wug * { cursor: none; }
 
-/* Excepción: donde se escribe o se selecciona texto conviene el cursor real,
-   que marca la posición exacta del punto de inserción. */
 .has-wug :is(input, textarea, [contenteditable]) { cursor: text; }
 
-/* Capas separadas, cada una con su propia animación, para que no se pisen:
-     .wug                  posición (la mueve el JS)
-     .wug__bird            picotazo al hacer clic
-     .wug__body y patas    negativo en el instante del golpe
-     .wug__leg-l / -r      apertura al desplazarse
-   Si dos animaciones vivieran en el mismo elemento, la última declarada
-   ganaría y anularía a la otra. */
 .wug {
   position: fixed;
   top: 0;
@@ -863,7 +737,7 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   width: 40px;
   height: 36px;
   z-index: 9999;
-  pointer-events: none;   /* nunca intercepta un clic */
+  pointer-events: none;
   opacity: 0;
   transition: opacity .18s ease;
   will-change: transform;
@@ -873,21 +747,10 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
 .wug__bird {
   position: absolute;
   inset: 0;
-  /* Pivote donde las patas tocan el suelo: al picotear, el cuerpo se tumba
-     hacia adelante desde ahí, como un pájaro de verdad. */
+
   transform-origin: 46% 84%;
 }
 
-/* Picotea al hacer clic, una sola vez. Un picotazo es asimétrico: si la ida y
-   la vuelta duran lo mismo, el ojo lo lee como un mecerse. Cuatro fases:
-     retrae (lento) · estoca (rapidísimo) · golpea (sostiene) · vuelve (suave)
-   La retracción previa es lo que más hace: sin ese impulso hacia atrás no hay
-   golpe que valga. */
-/* 260 ms en total, y el golpe cae a los ~100 ms del mousedown.
-   Es una restricción dura, no una preferencia estética: al clickear un link
-   la navegación arranca en el mouseup (80-120 ms después), y ahí el navegador
-   descarta la página con su animación a medio correr. Todo lo que tenga que
-   verse tiene que haber pasado antes. */
 .wug--peck .wug__bird { animation: wug-peck .26s; }
 
 @keyframes wug-peck {
@@ -898,21 +761,10 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   100% { rotate: 0deg;   translate: 0 0; }
 }
 
-/* En el instante del golpe, el wug se vuelve su propio negativo: el trazo pasa
-   a blanco y le crece un contorno negro alrededor.
-   Los cuatro drop-shadow son ese contorno — se dibujan siguiendo la silueta
-   real (incluidas las patas giradas), así que no hace falta ninguna imagen
-   extra ni recalcular nada cuando el bicho se mueve.
-   Va sobre .wug__bird y no sobre .wug: en tema oscuro el padre ya lleva su
-   propio invert, y al componerse uno con otro el negativo sale bien en los
-   dos temas. */
 .wug--peck .wug__body,
 .wug--peck .wug__leg-l,
 .wug--peck .wug__leg-r { animation: wug-negativo .26s steps(1, end); }
 
-/* El negativo entra junto con el golpe y se queda casi hasta el final: son
-   ~140 ms, que es poco, pero un cambio de color se percibe mucho más rápido
-   que un movimiento. */
 @keyframes wug-negativo {
   0%, 37%   { filter: none; }
   38%, 92%  { filter: invert(1)
@@ -921,17 +773,11 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   93%, 100% { filter: none; }
 }
 
-/* El trazo del original es negro: sobre el tema oscuro desaparecería, así que
-   ahí lo invertimos a blanco. */
 :root[data-theme="dark"] .wug { filter: invert(1); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .wug { filter: invert(1); }
 }
 
-/* El dibujo viene partido en tres capas que comparten el mismo lienzo, así
-   que apiladas reconstruyen el original exacto y alinean solas: cuerpo, pata
-   izquierda y pata derecha. Separar las patas una de otra es lo que permite
-   abrirlas hacia los costados sin deformar el trazo. */
 .wug__body,
 .wug__leg-l,
 .wug__leg-r {
@@ -942,25 +788,14 @@ a.chip:hover { background: var(--rule-strong); color: var(--ink-strong); }
   object-fit: contain;
 }
 
-/* Cada pata gira desde su propio nacimiento (medido sobre el original:
-   x=56 y x=88 de 141, y=106 de 128). Si giraran desde el centro del dibujo,
-   se despegarían del cuerpo. */
 .wug__leg-l { transform-origin: 40.1% 82.8%; }
 .wug__leg-r { transform-origin: 62.1% 82.8%; }
 
-/* Abren de golpe y se quedan abiertas: es un despegue, no una caminata.
-   El rebote del final de la curva es lo que le da el aire de dibujo animado;
-   un vaivén constante se leería como pasos. */
 .wug__leg-l,
 .wug__leg-r { transition: rotate .2s cubic-bezier(.2, 1.8, .4, 1); }
 
 .wug--flying .wug__leg-l { rotate:  36deg; }
 .wug--flying .wug__leg-r { rotate: -36deg; }
-
-
-/* --------------------------------------------------------------------------
-   404
-   -------------------------------------------------------------------------- */
 
 .notfound {
   min-height: 60vh;

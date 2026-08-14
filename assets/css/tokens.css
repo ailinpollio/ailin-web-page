@@ -1,13 +1,3 @@
-/* ==========================================================================
-   tokens.css — sistema de diseño (color, tipografía, espaciado)
-   Todo lo que sea "decisión de marca" vive acá. site.css sólo consume tokens.
-   ========================================================================== */
-
-/* --------------------------------------------------------------------------
-   1. Fuentes
-   woff2 subseteados a latín — ver tools/build_fonts.py
-   -------------------------------------------------------------------------- */
-
 @font-face {
   font-family: "Junicode";
   src: url("../fonts/junicode-regular.woff2") format("woff2");
@@ -29,15 +19,8 @@
   font-weight: 700; font-style: italic; font-display: swap;
 }
 
-/* --------------------------------------------------------------------------
-   2. Paleta
-   Ratios de contraste medidos contra los fondos reales de cada tema.
-   Los roles NO son intercambiables: #17A68F y #BAA6B2 reprueban WCAG AA como
-   texto sobre fondo claro (2.89:1 y 2.17:1), así que ahí sólo decoran.
-   -------------------------------------------------------------------------- */
-
 :root {
-  /* --- tipografía: Junicode en todo el sitio --- */
+
   --font-display: "Junicode", "Iowan Old Style", Georgia, "Times New Roman", serif;
   --font-body: var(--font-display);
   --font-ui: var(--font-display);
@@ -45,56 +28,48 @@
 
   --display-tracking: -0.006em;
   --body-leading: 1.62;
-  /* Junicode tiene altura-x baja: sube un poco para igualar la mancha de texto */
+
   --body-size: calc(var(--step-0) * 1.09);
 
-  /* --- color de marca, sin rol asignado --- */
   --plum: #914779;
   --slate: #53424C;
   --mauve: #BAA6B2;
   --pine: #00715D;
   --jade: #17A68F;
 
-  /* --- TEMA CLARO (por defecto en :root, sin media query) --- */
   --bg: #FBF8FA;
-  --bg-sunken: #F3ECF0;      /* bloques de código, filas alternas */
+  --bg-sunken: #F3ECF0;
   --surface: #FFFFFF;
 
-  --ink: #53424C;            /*  8.84:1  AAA  */
-  --ink-strong: #382B33;     /* 12.4 :1  AAA  — títulos */
-  --ink-muted: #7A6773;      /*  4.96:1  AA   — metadatos */
+  --ink: #53424C;
+  --ink-strong: #382B33;
+  --ink-muted: #7A6773;
 
-  --link: #914779;           /*  5.89:1  AA   */
+  --link: #914779;
   --link-hover: #6E3459;
-  --accent: #00715D;         /*  5.66:1  AA   — segundo acento legible */
-  --accent-quiet: #17A68F;   /*  2.89:1  DECORATIVO: subrayados, marcas, íconos junto a texto */
+  --accent: #00715D;
+  --accent-quiet: #17A68F;
 
-  --rule: #E5D9E0;           /* líneas divisorias */
+  --rule: #E5D9E0;
   --rule-strong: #BAA6B2;
   --chip-bg: #F3E9EF;
   --chip-ink: #6E3459;
 
-  --on-fill: #FFFFFF;        /* texto sobre --link o --accent como relleno */
+  --on-fill: #FFFFFF;
   --fill: #914779;
   --focus: #00715D;
 
   --shadow: 0 1px 2px rgb(56 43 51 / .05), 0 6px 20px -8px rgb(56 43 51 / .14);
   --selection: #F2D9E8;
 
-  /* --- espaciado y medida ---
-     --shell y --measure están calibrados juntos: riel + gap + measure ≈ shell,
-     para que la columna de texto llegue hasta el margen derecho en vez de
-     quedar flotando al medio con un hueco a la derecha. Si tocás uno, tocá
-     el otro. */
-  --shell: 74rem;            /* ancho total del sitio */
-  --measure: 47rem;          /* columna de lectura (~78 caracteres) */
-  --rail: 17.5rem;           /* columna izquierda en desktop */
+  --shell: 74rem;
+  --measure: 47rem;
+  --rail: 17.5rem;
   --gap: clamp(1.75rem, 4vw, 4.5rem);
   --pad-x: clamp(1.25rem, 5vw, 3rem);
   --radius: 4px;
   --radius-lg: 10px;
 
-  /* --- escala tipográfica --- */
   --step--1: clamp(0.84rem, 0.82rem + 0.10vw, 0.90rem);
   --step-0:  clamp(1.03rem, 1.00rem + 0.16vw, 1.13rem);
   --step-1:  clamp(1.22rem, 1.16rem + 0.30vw, 1.42rem);
@@ -105,22 +80,19 @@
   color-scheme: light;
 }
 
-/* --- TEMA OSCURO --- */
-/* Se declara dos veces a propósito: una para "auto" (preferencia del sistema)
-   y otra para la elección explícita del visitante. Ambas hacen falta. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #221B20;
     --bg-sunken: #2C242A;
     --surface: #2C242A;
 
-    --ink: #EFE6EB;          /* 13.80:1  AAA */
+    --ink: #EFE6EB;
     --ink-strong: #FFFFFF;
-    --ink-muted: #BAA6B2;    /*  7.37:1  AAA — acá el mauve SÍ funciona como texto */
+    --ink-muted: #BAA6B2;
 
-    --link: #D890BE;         /*  6.95:1  AA  — plum aclarado; #914779 daría 2.71:1 */
+    --link: #D890BE;
     --link-hover: #EDB4D6;
-    --accent: #17A68F;       /*  5.53:1  AA  — acá el jade SÍ funciona como texto */
+    --accent: #17A68F;
     --accent-quiet: #17A68F;
 
     --rule: #3D323A;
@@ -168,15 +140,5 @@
   color-scheme: dark;
 }
 
-/* --------------------------------------------------------------------------
-   3. Idioma
-   El contenido está escrito dos veces en el HTML, marcado con lang="es" y
-   lang="en". Estas reglas ocultan el idioma que no está activo: el cambio es
-   puro CSS, así que funciona incluso si el JavaScript no carga.
-   -------------------------------------------------------------------------- */
-
 :root[data-lang="en"] [lang="es"] { display: none; }
 :root[data-lang="es"] [lang="en"] { display: none; }
-
-/* Sin JavaScript, data-lang ya viene puesto en el <html>, así que siempre
-   se ve un solo idioma. */

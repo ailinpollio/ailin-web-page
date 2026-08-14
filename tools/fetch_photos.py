@@ -1,19 +1,3 @@
-#!/usr/bin/env python3
-"""Renueva las miniaturas de fotos desde tu portfolio de Adobe.
-
-    pip install Pillow
-    python3 tools/fetch_photos.py
-    python3 tools/fetch_photos.py --por-galeria 3
-
-Baja unas fotos de cada galería, las recorta en cuadrado y las guarda en
-assets/img/photos/. Las imágenes quedan alojadas en tu propio repositorio a
-propósito: enlazar al CDN de Adobe sería más cómodo pero la página dependería
-de que ese servicio siga en pie y no cambie las direcciones.
-
-A diferencia de fetch_letterboxd.py, este NO corre en GitHub Actions: se usa
-a mano, cuando quieras cambiar la selección.
-"""
-
 from io import BytesIO
 from pathlib import Path
 from urllib.request import Request, urlopen
@@ -24,21 +8,18 @@ import sys
 PORTFOLIO = "https://ailinpollio.myportfolio.com"
 GALERIAS = ["landscapes", "people", "urban"]
 DESTINO = Path(__file__).resolve().parent.parent / "assets" / "img" / "photos"
-LADO = 420          # px del lado de la miniatura cuadrada
+LADO = 420
 CALIDAD = 82
 
 CABECERAS = {"User-Agent": "Mozilla/5.0 (ailin-web-page)"}
-
 
 def bajar(url: str) -> bytes:
     with urlopen(Request(url, headers=CABECERAS), timeout=60) as r:
         return r.read()
 
-
 def fotos_de(galeria: str) -> list[str]:
-    """Direcciones de las fotos de una galería, sin repetir."""
     html = bajar(f"{PORTFOLIO}/{galeria}").decode("utf-8", "replace")
-    # Adobe publica varios anchos por foto; 600 alcanza y sobra para una miniatura
+
     urls = re.findall(r"https://cdn\.myportfolio\.com/\S+?_rw_600\.jpg\?h=\w+", html)
     vistas, unicas = set(), []
     for u in urls:
@@ -47,7 +28,6 @@ def fotos_de(galeria: str) -> list[str]:
             vistas.add(clave)
             unicas.append(u)
     return unicas
-
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
@@ -76,7 +56,7 @@ def main() -> int:
             n += 1
             im = Image.open(BytesIO(bajar(url))).convert("RGB")
             w, h = im.size
-            lado = min(w, h)                     # recorte cuadrado, centrado
+            lado = min(w, h)
             im = im.crop(((w - lado) // 2, (h - lado) // 2,
                           (w + lado) // 2, (h + lado) // 2))
             im = im.resize((LADO, LADO), Image.LANCZOS)
@@ -93,7 +73,6 @@ def main() -> int:
     print("  Acordate de actualizar los alt en personal.html: describen cada")
     print("  foto y hay que reescribirlos si cambiaste la selección.")
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())

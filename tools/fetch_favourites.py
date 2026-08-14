@@ -1,61 +1,32 @@
-#!/usr/bin/env python3
-"""Escribe assets/js/films.js con tus películas destacadas de Letterboxd.
-
-    python3 tools/fetch_favourites.py
-
-Para cambiar la selección, editá la lista FAVORITAS de abajo.
-
-Por qué es a mano y no automático: Letterboxd bloquea la lectura de las
-páginas de perfil (403 vía Cloudflare), que es donde viven los destacados. Las
-páginas de cada película sí son públicas, así que de ahí salen el título, el
-año, el director y el póster. Como los destacados cambian una vez cada tanto,
-pegar cuatro direcciones cuesta menos que cualquier alternativa.
-
-Ojo con los títulos repetidos: "A Brighter Tomorrow" es a la vez la película
-de Yassine Qnia (2021) y la de Nanni Moretti (2023). Por eso la lista guarda
-direcciones exactas y no títulos, y el script imprime el director para que
-puedas comprobar de un vistazo que trajo la correcta.
-"""
-
 from pathlib import Path
 from urllib.request import Request, urlopen
 import datetime as dt
 import json
 import re
 
-# ---------------------------------------------------------------------------
-# EDITÁ ACÁ: las direcciones de tus destacadas, en el orden en que querés que
-# aparezcan. Se copian de la barra del navegador estando en la película.
-# ---------------------------------------------------------------------------
 FAVORITAS = [
     "https://letterboxd.com/film/the-killing-of-a-sacred-deer/",
     "https://letterboxd.com/film/perfect-blue/",
-    "https://letterboxd.com/film/a-brighter-tomorrow-2023/",   # Moretti, no Qnia
+    "https://letterboxd.com/film/a-brighter-tomorrow-2023/",
     "https://letterboxd.com/film/the-hand-of-god/",
 ]
-# ---------------------------------------------------------------------------
 
 SALIDA = Path(__file__).resolve().parent.parent / "assets" / "js" / "films.js"
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
       "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36")
-
 
 def bajar(url: str) -> str:
     pedido = Request(url, headers={"User-Agent": UA, "Accept": "text/html"})
     with urlopen(pedido, timeout=45) as r:
         return r.read().decode("utf-8", "replace")
 
-
 def leer_pelicula(url: str) -> dict:
     html = bajar(url)
 
-    # Los datos vienen en JSON-LD, más estable que raspar el HTML: si alguna
-    # vez rediseñan la página, esto sigue funcionando.
     m = re.search(r'<script type="application/ld\+json">\s*(?:/\*[^*]*\*/)?\s*'
                   r'(\{.*?\})\s*(?:/\*[^*]*\*/)?\s*</script>', html, re.S)
     datos = json.loads(m.group(1)) if m else {}
 
-    # El año no está en el JSON-LD pero sí en og:title -> "Perfect Blue (1997)"
     og = re.search(r'<meta property="og:title" content="([^"]+)"', html)
     anio = None
     if og:
@@ -69,7 +40,6 @@ def leer_pelicula(url: str) -> dict:
         "link":     url,
         "poster":   datos.get("image"),
     }
-
 
 def main() -> int:
     peliculas = []
@@ -101,7 +71,6 @@ def main() -> int:
     SALIDA.write_text(texto, encoding="utf-8")
     print(f"\n  films.js actualizado · {len(peliculas)} destacadas")
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())

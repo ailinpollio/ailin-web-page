@@ -21,7 +21,6 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/site.css">
 
-<!-- Aplica tema e idioma guardados ANTES de pintar, para que no parpadee. -->
 <script>
 (function(){try{
   var t=localStorage.getItem("ailin:theme");
@@ -84,11 +83,8 @@
 
   <main class="content" id="main">
 
-    <!-- El menú lateral sigue diciendo «CV» a propósito: ahí manda la
-         brevedad. Acá, que es el título de la página, va el nombre completo. -->
     <h1 class="page-title"><span lang="es">Currículum Vitae</span><span lang="en">Curriculum Vitae</span></h1>
 
-    <!-- ==================== ESPAÑOL ==================== -->
     <div lang="es">
 
       <p class="page-lede">
@@ -291,7 +287,6 @@
 
     </div>
 
-    <!-- ==================== ENGLISH ==================== -->
     <div lang="en">
 
       <p class="page-lede">
@@ -496,7 +491,6 @@
 
   </main>
 
-
   <footer class="site-footer">
     <p>
       © <span id="year">2026</span> Ailín Pollio San Pedro<br>
@@ -511,9 +505,6 @@
         <span class="control__label" id="lbl-lang">
           <span lang="es">Idioma</span><span lang="en">Language</span>
         </span>
-        <!-- Ojo: estos dos botones NO llevan lang="…", porque el CSS oculta
-             todo lo que esté marcado con el idioma inactivo y desaparecería
-             justo el botón que hace falta para volver. -->
         <div class="switch" data-switch="lang" role="group" aria-labelledby="lbl-lang">
           <button type="button" data-value="es" aria-pressed="true">Español</button>
           <button type="button" data-value="en" aria-pressed="false">English</button>

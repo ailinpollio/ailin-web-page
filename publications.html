@@ -21,7 +21,6 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/site.css">
 
-<!-- Aplica tema e idioma guardados ANTES de pintar, para que no parpadee. -->
 <script>
 (function(){try{
   var t=localStorage.getItem("ailin:theme");
@@ -85,14 +84,11 @@
 
     <h1 class="page-title"><span lang="es">Publicaciones</span><span lang="en">Publications</span></h1>
 
-
     <fieldset class="filters" data-filters>
       <legend class="visually-hidden">
         <span lang="es">Filtrar publicaciones por tipo</span>
         <span lang="en">Filter publications by type</span>
       </legend>
-      <!-- Los botones los genera site.js a partir de los tipos que existan en
-           publications.js. No hace falta tocarlos al agregar una publicación. -->
     </fieldset>
 
     <div id="publication-list">
@@ -140,9 +136,6 @@
         <span class="control__label" id="lbl-lang">
           <span lang="es">Idioma</span><span lang="en">Language</span>
         </span>
-        <!-- Ojo: estos dos botones NO llevan lang="…", porque el CSS oculta
-             todo lo que esté marcado con el idioma inactivo y desaparecería
-             justo el botón que hace falta para volver. -->
         <div class="switch" data-switch="lang" role="group" aria-labelledby="lbl-lang">
           <button type="button" data-value="es" aria-pressed="true">Español</button>
           <button type="button" data-value="en" aria-pressed="false">English</button>

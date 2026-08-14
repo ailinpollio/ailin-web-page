@@ -21,7 +21,6 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/site.css">
 
-<!-- Aplica tema e idioma guardados ANTES de pintar, para que no parpadee. -->
 <script>
 (function(){try{
   var t=localStorage.getItem("ailin:theme");
@@ -97,8 +96,6 @@
     <h2 class="section-label section-label--soft" lang="es">Ver pelis…</h2>
     <h2 class="section-label section-label--soft" lang="en">Watch some films…</h2>
 
-    <!-- La lista la dibuja site.js a partir de assets/js/films.js, que se
-         regenera solo cada día desde el RSS de Letterboxd. -->
     <div id="film-list"></div>
 
     <p>
@@ -112,9 +109,6 @@
     <h2 class="section-label section-label--soft" lang="es">O sacar fotos</h2>
     <h2 class="section-label section-label--soft" lang="en">Or take some pictures</h2>
 
-    <!-- Miniaturas locales, no enlazadas al CDN de Adobe: así cargan rápido y
-         siguen funcionando aunque el portfolio cambie o se caiga.
-         Para renovarlas: python3 tools/fetch_photos.py -->
     <ul class="photo-grid">
       <li><a href="https://ailinpollio.myportfolio.com/landscapes" rel="noopener">
         <img src="assets/img/photos/foto-1.jpg" width="420" height="420" loading="lazy"
@@ -171,9 +165,6 @@
         <span class="control__label" id="lbl-lang">
           <span lang="es">Idioma</span><span lang="en">Language</span>
         </span>
-        <!-- Ojo: estos dos botones NO llevan lang="…", porque el CSS oculta
-             todo lo que esté marcado con el idioma inactivo y desaparecería
-             justo el botón que hace falta para volver. -->
         <div class="switch" data-switch="lang" role="group" aria-labelledby="lbl-lang">
           <button type="button" data-value="es" aria-pressed="true">Español</button>
           <button type="button" data-value="en" aria-pressed="false">English</button>

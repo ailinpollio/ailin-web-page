@@ -1,17 +1,3 @@
-#!/usr/bin/env python3
-"""Servidor de desarrollo con recarga automática.
-
-    python3 dev.py            # abre http://localhost:8000 en el navegador
-    python3 dev.py --port 9000
-    python3 dev.py --no-open
-
-Cada vez que guardás un .html, .css o .js, la pestaña se refresca sola.
-Sólo escucha en 127.0.0.1, así que no queda expuesto en la red.
-
-El script de recarga se inyecta al vuelo y NUNCA toca los archivos del disco:
-lo que subís a GitHub no lo incluye.
-"""
-
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import argparse
@@ -44,9 +30,7 @@ RELOAD_SNIPPET = """
 </script>
 """
 
-
 def fingerprint() -> str:
-    """Estado del árbol de archivos: cambia si algo se guarda, agrega o borra."""
     stamps = []
     for path in ROOT.rglob("*"):
         if any(part in SKIP_DIRS for part in path.parts):
@@ -57,7 +41,6 @@ def fingerprint() -> str:
             except OSError:
                 pass
     return json.dumps(sorted(stamps))
-
 
 class DevHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
@@ -98,7 +81,6 @@ class DevHandler(SimpleHTTPRequestHandler):
             pass
 
     def send_head(self):
-        """Para HTML: inyecta el snippet de recarga antes de </body>."""
         path = self.translate_path(self.path)
         if Path(path).is_dir():
             for index in ("index.html", "index.htm"):
@@ -132,7 +114,6 @@ class DevHandler(SimpleHTTPRequestHandler):
         import io
         return io.BytesIO(body)
 
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8000)
@@ -164,7 +145,5 @@ def main():
         server.server_close()
     return 0
 
-
 if __name__ == "__main__":
     raise SystemExit(main())
-

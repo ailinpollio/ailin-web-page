@@ -18,11 +18,6 @@
 
 <link rel="canonical" href="https://ailinpollio.github.io/">
 
-<!-- Ficha para buscadores: le dice a Google que esta página es sobre una
-     persona, y que los perfiles de "sameAs" son de la misma. Eso es lo que
-     conecta este sitio con tu Scholar, tu ORCID y tu LinkedIn, que ya
-     aparecen cuando buscan tu nombre. Si cambiás de institución o sumás un
-     perfil, actualizalo acá. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -64,7 +59,6 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/site.css">
 
-<!-- Aplica tema e idioma guardados ANTES de pintar, para que no parpadee. -->
 <script>
 (function(){try{
   var t=localStorage.getItem("ailin:theme");
@@ -126,17 +120,10 @@
 
   <main class="content" id="main">
 
-    <!-- Sin título visible: la página arranca directo con la foto y la bio.
-         El h1 sigue existiendo pero oculto, porque toda página necesita uno:
-         es lo que anuncia un lector de pantalla al entrar y lo que Google usa
-         como encabezado del documento. En el menú lateral sí se ve. -->
     <h1 class="visually-hidden"><span lang="es">Sobre mí</span><span lang="en">About</span></h1>
 
-    <!-- ==================== ESPAÑOL ==================== -->
     <div lang="es">
 
-      <!-- La foto está DOS veces en este archivo, una por idioma: si la
-           cambiás, cambiá las dos (y el alt, cada uno en su idioma). -->
       <img class="portrait" src="assets/img/portrait.jpg" width="800" height="1000"
            alt="Ailín Pollio San Pedro sonriendo, de pelo castaño largo y remera verde,
                 en una terraza con vista a un pueblo sobre una ladera y al mar.">
@@ -179,7 +166,6 @@
 
       <h2 class="section-label">Novedades</h2>
 
-      <!-- Lo más nuevo arriba. Para agregar una novedad, copiá un ítem entero. -->
       <ul class="news">
         <li>
           <span class="news__mark" aria-hidden="true">🎓</span>
@@ -226,7 +212,6 @@
 
     </div>
 
-    <!-- ==================== ENGLISH ==================== -->
     <div lang="en">
 
       <img class="portrait" src="assets/img/portrait.jpg" width="800" height="1000"
@@ -331,9 +316,6 @@
         <span class="control__label" id="lbl-lang">
           <span lang="es">Idioma</span><span lang="en">Language</span>
         </span>
-        <!-- Ojo: estos dos botones NO llevan lang="…", porque el CSS oculta
-             todo lo que esté marcado con el idioma inactivo y desaparecería
-             justo el botón que hace falta para volver. -->
         <div class="switch" data-switch="lang" role="group" aria-labelledby="lbl-lang">
           <button type="button" data-value="es" aria-pressed="true">Español</button>
           <button type="button" data-value="en" aria-pressed="false">English</button>
